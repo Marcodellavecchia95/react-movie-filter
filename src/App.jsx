@@ -1,17 +1,42 @@
 import MoviesList from "./data/moviesList";
 import Filmcard from "./components/Filmcard";
 import { useState, useEffect } from "react";
-import moviesList from "./data/moviesList";
 
 export default function App() {
   const [selectedGenre, setSelectedGenre] = useState("");
-  const filteredMovies =
-    selectedGenre === ""
-      ? MoviesList
-      : MoviesList.filter((movie) => movie.genre === selectedGenre);
+  const [filteredMovies, setFilteredMovie] = useState(MoviesList);
+
+  const [nameFilter, setNameFilter] = useState("");
+
+  useEffect(() => {
+    let filtered = MoviesList;
+
+    if (selectedGenre) {
+      filtered = filtered.filter((movie) => movie.genre === selectedGenre);
+    }
+
+    if (nameFilter) {
+      filtered = filtered.filter((movie) =>
+        movie.title.toLowerCase().includes(nameFilter.toLowerCase())
+      );
+    }
+
+    setFilteredMovie(filtered);
+  }, [nameFilter, selectedGenre]);
+
   return (
     <>
       <div className="container">
+        <input
+          value={nameFilter}
+          onChange={(e) => {
+            setNameFilter(e.target.value);
+          }}
+          type="text"
+          className="my-4"
+          placeholder="Ricerca film per titolo..."
+        />
+        <h1>{JSON.stringify(selectedGenre)}</h1>
         <select
           value={selectedGenre}
           onChange={(e) => {
